@@ -1,6 +1,6 @@
 Pod::Spec.new do |spec|
     spec.name                  = 'LifePopLabel'
-    spec.version               = '1.0.0'
+    spec.version               = '1.0.1'
     spec.summary               = 'Implements a pop style view.'
 
     spec.description           = <<-DESC
