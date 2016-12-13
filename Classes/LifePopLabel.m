@@ -260,9 +260,9 @@
 
 - (instancetype)initWithText:(NSString *)text {
     if (self = [super init]) {
+        _text = [text copy];
         [self configureDefaults];
         [self configureViews];
-        self.text = text;
         [self updateViewsFrame];
         [self invalidateIntrinsicContentSize];
     }
@@ -272,6 +272,7 @@
 - (LifePopBackgroundView *)popBackgroundView {
     if (!_popBackgroundView) {
         _popBackgroundView = [[LifePopBackgroundView alloc]init];
+        _popBackgroundView.clipsToBounds = YES;
         _popBackgroundView.backgroundColor = [UIColor clearColor];
         _popBackgroundView.arrowHeight = self.arrowHeight;
         _popBackgroundView.arrowAngleDegree = self.arrowAngleDegree;
@@ -301,6 +302,7 @@
 - (void)configureDefaults {
     _textFont = [UIFont systemFontOfSize:13];
     _textColor = [UIColor blackColor];
+    _zeroIntrinsicHeightWhenTextEmpty = YES;
     _maxWidth = 300;
     _minWidth = 80;
     _maxHeight = 1000;
@@ -352,6 +354,12 @@
 - (void)setTextAlignment:(NSTextAlignment)textAlignment {
     _textAlignment = textAlignment;
     _label.textAlignment = textAlignment;
+    [self updateViewsFrame];
+    [self invalidateIntrinsicContentSize];
+}
+
+- (void)setZeroIntrinsicHeightWhenTextEmpty:(BOOL)zeroIntrinsicHeightWhenTextEmpty {
+    _zeroIntrinsicHeightWhenTextEmpty = zeroIntrinsicHeightWhenTextEmpty;
     [self updateViewsFrame];
     [self invalidateIntrinsicContentSize];
 }
@@ -462,13 +470,17 @@
     viewWidth = MIN(viewWidth, self.maxWidth);
     viewWidth = MAX(viewWidth, self.minWidth);
     
-    if (self.arrowAttachSide == LifePopLabelArrowAttachOnBottom) {
-        viewHeight = self.contentEdgeInsets.top + labelIntrinsicSize.height + self.contentEdgeInsets.bottom + self.arrowHeight;
+    if (self.text.length == 0 && self.zeroIntrinsicHeightWhenTextEmpty) {
+        viewHeight = 0;
     } else {
-        viewHeight = self.arrowHeight + self.contentEdgeInsets.top + labelIntrinsicSize.height + self.contentEdgeInsets.bottom;
+        if (self.arrowAttachSide == LifePopLabelArrowAttachOnBottom) {
+            viewHeight = self.contentEdgeInsets.top + labelIntrinsicSize.height + self.contentEdgeInsets.bottom + self.arrowHeight;
+        } else {
+            viewHeight = self.arrowHeight + self.contentEdgeInsets.top + labelIntrinsicSize.height + self.contentEdgeInsets.bottom;
+        }
+        viewHeight = MIN(viewHeight, self.maxHeight);
+        viewHeight = MAX(viewHeight, self.minHeight);
     }
-    viewHeight = MIN(viewHeight, self.maxHeight);
-    viewHeight = MAX(viewHeight, self.minHeight);
     
     self.bounds = CGRectMake(0, 0, viewWidth, viewHeight);
     
@@ -476,15 +488,17 @@
     _popBackgroundView.frame = self.bounds;
     
     // update label frame
-    CGPoint labelOrigin;
-    labelOrigin.x = self.contentEdgeInsets.left;
-    labelOrigin.y = self.contentEdgeInsets.top;
-    if (self.arrowAttachSide == LifePopLabelArrowAttachOnTop) {
-        labelOrigin.y += self.arrowHeight;
+    if (viewHeight <= 0) {
+        _label.frame = self.bounds;
+    } else {
+        CGPoint labelOrigin;
+        labelOrigin.x = self.contentEdgeInsets.left;
+        labelOrigin.y = self.contentEdgeInsets.top;
+        if (self.arrowAttachSide == LifePopLabelArrowAttachOnTop) {
+            labelOrigin.y += self.arrowHeight;
+        }
+        _label.frame = CGRectMake(labelOrigin.x, labelOrigin.y, labelIntrinsicSize.width, labelIntrinsicSize.height);
     }
-    _label.frame = CGRectMake(labelOrigin.x, labelOrigin.y, labelIntrinsicSize.width, labelIntrinsicSize.height);
-    
-    
 }
 
 - (CGSize)intrinsicContentSize {

@@ -21,6 +21,8 @@ typedef NS_ENUM(NSUInteger, LifePopLabelArrowAttachSide) {
 @property (nonatomic) UIColor *textColor;
 
 @property (nonatomic) NSTextAlignment textAlignment;
+// Whether set intrinsic height to zero when text is empty. Default YES
+@property (nonatomic) BOOL zeroIntrinsicHeightWhenTextEmpty;
 // default 300
 @property (nonatomic) CGFloat maxWidth;
 // default 80

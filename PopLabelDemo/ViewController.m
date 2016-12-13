@@ -20,13 +20,14 @@
     
     self.view.backgroundColor = [UIColor whiteColor];
     
-    LifePopLabel *popLabel = [[LifePopLabel alloc]initWithText:@"This method appends a cubic Bézier curve from the current point to the end point specified by the endPoint parameter. The two control points define the curvature of the segment. Figure 2 shows an approximation of a cubic Bézier curve given a set of initial points."];
+    LifePopLabel *popLabel = [[LifePopLabel alloc]initWithText:@""];
     popLabel.textColor = [UIColor whiteColor];
     popLabel.fillColor = [UIColor orangeColor];
     popLabel.borderWidth = 0;
     popLabel.maxWidth = CGRectGetWidth([UIScreen mainScreen].bounds) - 30.f;
     popLabel.numbersOfLine = 0;
     popLabel.backgroundColor = [UIColor clearColor];
+    popLabel.zeroIntrinsicHeightWhenTextEmpty = NO;
     
     [self.view addSubview:popLabel];
     popLabel.translatesAutoresizingMaskIntoConstraints = NO;
