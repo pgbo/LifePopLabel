@@ -4,7 +4,7 @@
 
 A pop style view, you can custom its border, fill color, arrow position, arrow angle and height, adding text. And its height will be caculated automatically.
 
-## Exmaple snapshoots
+## Example snapshoots
 ![snapshoots 1](Snapshoots/1.png)
 ### 
 ![snapshoots 1](Snapshoots/2.png)
